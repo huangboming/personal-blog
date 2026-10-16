@@ -1,4 +1,4 @@
-# 本地预览与主题升级
+# 环境搭建
 
 ## 环境准备
 
@@ -75,7 +75,9 @@ bundle install
 > echo "3.4.1" > .ruby-version
 > ```
 
-## 本地预览
+## 验证环境
+
+### 本地预览
 
 ```shell
 bundle exec jekyll serve
@@ -95,70 +97,7 @@ JEKYLL_ENV=production bundle exec jekyll build
 
 生成的静态文件在 `_site/` 目录下。
 
-线上发布、部署排查与配置说明见 [站点部署](deployment.md)。
+## 相关操作
 
-## 升级 Chirpy 主题
-
-本博客基于 [`chirpy-starter`](https://github.com/cotes2020/chirpy-starter) 创建。升级步骤如下：
-
-### 首次配置（只需一次）
-
-添加 chirpy-starter 为上游仓库：
-
-```shell
-git remote add chirpy https://github.com/cotes2020/chirpy-starter.git
-```
-
-验证是否添加成功：
-
-```shell
-git remote -v
-# 应看到：
-# chirpy  https://github.com/cotes2020/chirpy-starter.git (fetch)
-# chirpy  https://github.com/cotes2020/chirpy-starter.git (push)
-```
-
-### 每次升级
-
-1. 拉取上游标签：
-
-   ```shell
-   git fetch chirpy --tags
-   ```
-
-2. 合并最新标签（将 `vX.Y.Z` 替换为目标版本号）：
-
-   ```shell
-   git merge vX.Y.Z --squash --allow-unrelated-histories
-   ```
-
-3. 解决冲突（如果有）。注意保留自己的自定义修改。
-
-4. 提交升级：
-
-   ```shell
-   git add . && git commit -m "chore: upgrade to X.Y.Z"
-   ```
-
-5. 更新 gem 依赖：
-
-   ```shell
-   bundle update
-   ```
-
-### 查看当前版本
-
-```shell
-bundle info jekyll-theme-chirpy
-```
-
-## PWA 缓存说明
-
-本博客启用了 PWA 离线缓存。这意味着：
-
-- 浏览器首次访问后会缓存页面内容。
-- 后续访问会先显示缓存内容，同时后台检查更新。
-- 更新过程需要几十秒到几分钟。
-- 如果想立即看到最新内容，使用浏览器的**隐私/无痕模式**。
-
-> **提示：** 部署后如果看不到更新，不要慌，这不是 bug。
+- [站点部署](deployment.md)：线上发布、部署排查及缓存说明。
+- [升级 Chirpy 主题](theme-upgrade.md)：同步上游模板和更新主题依赖。
