@@ -78,3 +78,7 @@ Production 和 Preview 环境变量：
 升级 Ruby 时，同步更新 `.ruby-version` 和 Pages 的 `RUBY_VERSION`。构建环境的其他选项见 [Cloudflare 构建环境说明](https://developers.cloudflare.com/pages/configuration/build-image/)。
 
 站点地址在 `_config.yml` 中配置为 `url: "https://huangboming.com"`、`baseurl: ""`。如需重新绑定域名，应从 Pages 项目的 **Custom domains** 操作，而不是只手动添加 DNS 记录。
+
+## 相关操作
+
+- [搜索引擎收录](search-indexing.md)：在 GSC 和 Bing Webmaster Tools 中验证站点、提交 Sitemap。
