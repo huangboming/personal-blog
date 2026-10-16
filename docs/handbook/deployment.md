@@ -82,3 +82,4 @@ Production 和 Preview 环境变量：
 ## 相关操作
 
 - [搜索引擎收录](search-indexing.md)：在 GSC 和 Bing Webmaster Tools 中验证站点、提交 Sitemap。
+- [RSS 订阅](feed.md)：全文 Feed 的内容、维护位置与验证方式。

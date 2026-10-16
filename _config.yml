@@ -28,10 +28,13 @@ url: "https://huangboming.com"
 github:
   username: huangboming # change to your GitHub username
 
+author:
+  name: &author_name Boming Huang
+  url: "https://huangboming.com/about/"
+
 social:
-  # Change to your full name.
-  # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Boming Huang
+  # Share the author name between SEO metadata and Chirpy's byline/footer.
+  name: *author_name
   email: huangboming666@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
@@ -205,6 +208,7 @@ exclude:
   - "*.gem"
   - "*.gemspec"
   - docs
+  - tests
   - tools
   - README.md
   - LICENSE

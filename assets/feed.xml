@@ -1,0 +1,41 @@
+---
+layout: null
+permalink: /feed.xml
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ site.lang | xml_escape }}">
+  <id>{{ '/' | absolute_url | xml_escape }}</id>
+  <title>{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | xml_escape }}</subtitle>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <author>
+    <name>{{ site.author.name | xml_escape }}</name>
+    <uri>{{ site.author.url | absolute_url | xml_escape }}</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="{{ page.url | absolute_url | xml_escape }}" />
+  <link rel="alternate" type="text/html" href="{{ '/' | absolute_url | xml_escape }}" />
+  <generator uri="https://jekyllrb.com/" version="{{ jekyll.version }}">Jekyll</generator>
+  <rights>© {{ 'now' | date: '%Y' }} {{ site.author.name | xml_escape }}</rights>
+  <icon>{{ '/assets/img/favicons/favicon.ico' | absolute_url | xml_escape }}</icon>
+  <logo>{{ '/assets/img/favicons/favicon-96x96.png' | absolute_url | xml_escape }}</logo>
+  {% for post in site.posts limit: 20 %}
+    {% assign post_url = post.url | absolute_url %}
+    {% assign author = post.author | default: post.authors.first | default: site.author %}
+    {% assign author_name = author.name | default: site.data.authors[author].name | default: author %}
+    {% assign author_url = author.url | default: site.data.authors[author].url %}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <id>{{ post_url | xml_escape }}</id>
+    <link rel="alternate" type="text/html" href="{{ post_url | xml_escape }}" />
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    <updated>{{ post.last_modified_at | default: post.date | date_to_xmlschema }}</updated>
+    <author>
+      <name>{{ author_name | xml_escape }}</name>
+      {% if author_url %}<uri>{{ author_url | absolute_url | xml_escape }}</uri>{% endif %}
+    </author>
+    {% for category in post.categories %}<category term="{{ category | xml_escape }}" />{% endfor %}
+    <summary type="text">{{ post.description | default: post.excerpt | strip_html | strip | xml_escape }}</summary>
+    <content type="html" xml:base="{{ post_url | xml_escape }}">{{ post.content | feed_content: post | xml_escape }}</content>
+  </entry>
+  {% endfor %}
+</feed>
