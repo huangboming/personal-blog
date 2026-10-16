@@ -50,7 +50,7 @@ Cloudflare 会自动安装依赖、构建并发布站点；构建失败时不会
 
 | 配置项 | 值 |
 | --- | --- |
-| Git 仓库 | `huangboming/huangboming.github.io` |
+| Git 仓库 | `huangboming/personal-blog` |
 | Production branch | `main` |
 | Framework preset | `Jekyll` |
 | Build output directory | `_site` |

@@ -118,7 +118,7 @@ comments:
     issue_term: # < url | pathname | title | ...>
   # Giscus options › https://giscus.app
   giscus:
-    repo: huangboming/huangboming.github.io
+    repo: huangboming/personal-blog
     repo_id: R_kgDONmKfHA
     category: Comments
     category_id: DIC_kwDONmKfHM4CqFtM

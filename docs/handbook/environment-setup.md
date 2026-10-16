@@ -65,8 +65,8 @@ gem install bundler
 ### 克隆并安装项目依赖
 
 ```shell
-git clone git@github.com:huangboming/huangboming.github.io.git
-cd huangboming.github.io
+git clone git@github.com:huangboming/personal-blog.git
+cd personal-blog
 bundle install
 ```
 
