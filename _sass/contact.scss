@@ -1,0 +1,12 @@
+#sidebar .sidebar-bottom .linux-do-icon {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  background: url('../images/linux-do.svg') center / contain no-repeat;
+  filter: grayscale(1);
+  transition: filter 0.3s ease-in-out;
+}
+
+#sidebar .sidebar-bottom a:is(:hover, :focus-visible) .linux-do-icon {
+  filter: none;
+}

@@ -3,6 +3,10 @@
 - type: github
   icon: "fab fa-github"
 
+- type: linux-do
+  icon: "linux-do-icon"
+  url: "https://linux.do/u/brooky"
+
 - type: email
   icon: "fas fa-envelope"
   noblank: true # open link in current tab
