@@ -95,6 +95,8 @@ JEKYLL_ENV=production bundle exec jekyll build
 
 生成的静态文件在 `_site/` 目录下。
 
+线上发布、部署排查与配置说明见 [站点部署](deployment.md)。
+
 ## 升级 Chirpy 主题
 
 本博客基于 [`chirpy-starter`](https://github.com/cotes2020/chirpy-starter) 创建。升级步骤如下：
