@@ -1,70 +1,77 @@
 # 更换网站图标（Favicon）
 
-Chirpy 的默认图标存放在 `assets/img/favicons/`。以下是生成并替换为自己的图标的完整流程。
+网站图标位于 `assets/img/favicons/`，由 Chirpy 主题自动引用，无需覆盖主题模板。
 
-## 设计方向
+## 设计与源文件
 
-Favicon 的核心设计约束：
+`assets/img/favicons/favicon.svg` 是唯一的可编辑源文件，同时直接供支持 SVG favicon 的浏览器使用。当前设计为「猫耳终端」：猫耳呼应侧栏头像，`>_` 表达技术探索。
 
-- 在小尺寸下（16×16 到 32×32）必须清晰可辨
-- 极度简约，不要文字
-- 与博客主题（「数字漫游」— 漫无目的地探索和折腾）契合
+- 浏览器图标保持透明背景，黑色描边与白色外边框兼顾浅色、深色标签栏。
+- Apple Touch 和 PWA 图标使用不透明的深石板蓝灰底色（`#2D3748`）。
+- 光标动画保留在 SVG 注释中，默认静态显示；如需恢复可取消注释，但不同浏览器对 favicon 动画的支持不一致。
+- 修改 SVG 后，重新生成其余图标，不单独编辑 PNG 或 ICO。
 
-## 1. 生成源图（AI 生图）
+## 重新生成图标
 
-使用 AI 生图工具（DALL·E、Midjourney、Ideogram 等）生成一张 **正方形**、**至少 1254×1254** 像素的源图。
-
-以下是本博客使用的 prompt 模板，设计概念为「信号波形 + 探索小径」的蜿蜒曲线：
-
-```
-A minimalist flat icon, white on deep navy (#0f172a) background. A single continuous winding line that resembles both a signal waveform and a mountain trail, starting from bottom-left and ending at top-right. The line is composed of tiny glowing dots (like data packets or footsteps), with 4-5 small glowing nodes along the path. Clean vector illustration style, bold stroke weight, zero text, no shading, no gradient — flat design suitable for extreme downscaling to 16x16 pixels. The composition should be perfectly centered and symmetrical in weight. App icon style, duotone, sharp edges, pixel-crisp.
-```
-
-> **提示**：建议同时生成暗色背景和亮色背景两个版本，分别缩小到 16px 对比，选择更清晰的一方。
-
-## 2. 生成图标文件（ImageMagick）
-
-源图保存为 `favicon.png`，用 ImageMagick 一键生成所有需要的尺寸：
+需要 **librsvg**（提供 `rsvg-convert`）和 **ImageMagick**：
 
 ```shell
-# 生成各尺寸 PNG
-magick favicon.png -resize 96x96 assets/img/favicons/favicon-96x96.png
-magick favicon.png -resize 180x180 assets/img/favicons/apple-touch-icon.png
-magick favicon.png -resize 192x192 assets/img/favicons/web-app-manifest-192x192.png
-magick favicon.png -resize 512x512 assets/img/favicons/web-app-manifest-512x512.png
-
-# 生成多尺寸 .ico（16, 32, 48）
-magick favicon.png -define icon:auto-resize=48,32,16 assets/img/favicons/favicon.ico
-
-# 生成 SVG（内嵌 PNG）
-echo "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"96\" height=\"96\" viewBox=\"0 0 96 96\">
-  <image width=\"96\" height=\"96\" xlink:href=\"data:image/png;base64,$(base64 -i assets/img/favicons/favicon-96x96.png)\"/>
-</svg>" > assets/img/favicons/favicon.svg
-
-# 清理源文件
-rm favicon.png
+brew install librsvg imagemagick
 ```
 
-### 备选方案：在线工具
+在仓库根目录执行：
 
-如果不方便使用 ImageMagick，也可以用 [Real Favicon Generator](https://realfavicongenerator.net/)：上传源图 → 保持默认选项 → 下载图标包 → 替换 `assets/img/favicons/` 下的文件（删除工具生成的 `site.webmanifest`，本仓库已自带）。
+```shell
+icons=assets/img/favicons
+source="$icons/favicon.svg"
+tmp_dir=$(mktemp -d)
 
-## 3. 清单
+# 现代浏览器 PNG，保留透明背景
+rsvg-convert -w 96 -h 96 "$source" -o "$icons/favicon-96x96.png"
 
-替换后的 `assets/img/favicons/` 应包含以下文件：
+# 分别渲染各尺寸，再合并成多尺寸 ICO
+for size in 16 32 48; do
+  rsvg-convert -w "$size" -h "$size" "$source" -o "$tmp_dir/favicon-$size.png"
+done
+magick "$tmp_dir/favicon-48.png" "$tmp_dir/favicon-32.png" "$tmp_dir/favicon-16.png" \
+  "$icons/favicon.ico"
 
-| 文件 | 用途 |
-|------|------|
-| `favicon.ico` | 经典浏览器图标 |
-| `favicon-96x96.png` | 现代浏览器 PNG 图标 |
-| `favicon.svg` | SVG 矢量图标 |
-| `apple-touch-icon.png` | iOS 主屏幕 (180×180) |
-| `web-app-manifest-192x192.png` | PWA 小图标 |
-| `web-app-manifest-512x512.png` | PWA 大图标 |
-| `site.webmanifest` | PWA 配置文件 |
+# 主屏幕和普通 PWA 图标使用不透明背景
+rsvg-convert -w 180 -h 180 -b '#2D3748' "$source" -o "$icons/apple-touch-icon.png"
+rsvg-convert -w 192 -h 192 -b '#2D3748' "$source" -o "$icons/web-app-manifest-192x192.png"
 
-## 4. 验证
+# 512px 图标在 manifest 中标记为 maskable，需要额外的裁切安全边距
+rsvg-convert -w 348 -h 348 --page-width 512 --page-height 512 --left 82 --top 82 \
+  -b '#2D3748' "$source" -o "$icons/web-app-manifest-512x512.png"
+```
 
-本地运行 `bundle exec jekyll serve`，浏览器访问后检查标签页图标是否更新。
+512px 图标将图形缩小并居中放置，使当前猫耳终端完整落在安全圆内（以图像中心为圆心，半径为边长的 40%）。如果以后修改轮廓，需要重新检查安全边距，避免系统将图标裁成圆形等形状时切掉猫耳。
 
-> **提示**：由于浏览器缓存，可能需要强制刷新（Cmd+Shift+R）或使用隐私模式查看。
+## 文件清单
+
+| 文件 | 尺寸 | 用途 |
+|------|------|------|
+| `favicon.svg` | 矢量 | 可编辑源文件、现代浏览器图标 |
+| `favicon.ico` | 16、32、48px | 经典浏览器图标 |
+| `favicon-96x96.png` | 96×96 | 浏览器 PNG 图标、Feed 标志 |
+| `apple-touch-icon.png` | 180×180 | iOS 主屏幕 |
+| `web-app-manifest-192x192.png` | 192×192 | PWA 普通图标 |
+| `web-app-manifest-512x512.png` | 512×512 | PWA 可裁切图标（`maskable`） |
+| `site.webmanifest` | — | PWA 配置；图标路径和尺寸不变时无需修改 |
+
+## 验证
+
+1. 检查 PNG 和 ICO 尺寸：
+
+   ```shell
+   magick identify assets/img/favicons/*.png assets/img/favicons/favicon.ico
+   ```
+
+2. 按[环境搭建](environment-setup.md#本地预览)启动预览，检查浅色、深色标签栏和 16、32、48px 下的辨识度；另外确认主屏幕图标底色不透明，PWA 图标裁切后不丢失主体。
+3. 运行构建、回归测试和内部链接检查：
+
+   ```shell
+   bash tools/test.sh
+   ```
+
+浏览器可能单独缓存 favicon，发布后若仍看到旧图标，先用无痕窗口核对。PWA 缓存与发布排查见[站点部署](deployment.md)。
