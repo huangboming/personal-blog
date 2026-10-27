@@ -14,7 +14,7 @@
 | Sitemap | https://huangboming.com/sitemap.xml |
 | 爬虫规则 | https://huangboming.com/robots.txt |
 
-项目已通过 `jekyll-sitemap` 自动生成 Sitemap 和 `robots.txt`，不需要手工创建。Sitemap 中的网址应以 `https://huangboming.com/` 开头；如不正确，检查 `_config.yml` 的 `url` 和 `baseurl`，再按 [站点部署](deployment.md) 发布。
+项目通过 `jekyll-sitemap` 自动生成 Sitemap；`robots.txt` 由项目的 `assets/robots.txt` 覆盖 Chirpy 主题模板，构建后输出到站点根目录。Sitemap 中的网址应以 `https://huangboming.com/` 开头；如不正确，检查 `_config.yml` 的 `url` 和 `baseurl`，再按 [站点部署](deployment.md) 发布。
 
 ## Google Search Console
 
@@ -80,6 +80,7 @@ Bing 会通过 GSC 定期复核所有权。如果以后撤销授权，需要重�
 - 正常发文、推送和部署后，Sitemap 会自动更新，不必每篇文章都重新提交 Sitemap。
 - 想检查某篇文章时，在 GSC 的 **网址检查（URL inspection）** 或 Bing 的 **URL Inspection** 中输入文章完整网址；需要时再按平台提示请求编入索引。
 - 抓取、索引和报表更新需要时间，不以提交后立即能否搜索到文章作为成功标准。
+- `robots.txt` 保留主题的 `/norobots/` 禁止抓取规则，并禁止抓取 Cloudflare 的 `/cdn-cgi/` 系统路径。GSC 中的 `/cdn-cgi/l/email-protection` 404 不代表文章丢失，不需要重定向到首页；禁止抓取也不会立即清除历史报表。
 
 | 情况 | 先检查什么 |
 | --- | --- |
@@ -90,6 +91,7 @@ Bing 会通过 GSC 定期复核所有权。如果以后撤销授权，需要重�
 
 ## 官方说明
 
+- [Cloudflare：`/cdn-cgi/` 系统路径与爬虫规则](https://developers.cloudflare.com/fundamentals/reference/cdn-cgi-endpoint/)
 - [Google：验证网站所有权](https://support.google.com/webmasters/answer/9008080?hl=zh-Hans)
 - [Google：站点地图报告](https://support.google.com/webmasters/answer/7451001?hl=zh-Hans)
 - [Bing：从 GSC 导入已验证站点](https://blogs.bing.com/webmaster/2019/9/Import-sites-from-Search-Console-to-Bing-Webmaster-Tools/)

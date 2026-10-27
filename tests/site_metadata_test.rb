@@ -15,6 +15,11 @@ feed = Nokogiri::XML(File.read(File.join(site_dir, "feed.xml"))) { |config| conf
 ns = { "a" => "http://www.w3.org/2005/Atom" }
 root_url = feed.at_xpath("/a:feed/a:id", ns).text
 root_uri = Addressable::URI.parse(root_url)
+robots = File.readlines(File.join(site_dir, "robots.txt"), chomp: true).map(&:strip)
+assert(robots.include?("User-agent: *"), "Robots rules must apply to all crawlers")
+assert(robots.include?("Disallow: /cdn-cgi/"), "Robots must block Cloudflare system endpoints")
+assert(robots.include?("Disallow: /norobots/"), "Robots must retain the theme's excluded path")
+assert(robots.grep(/^Sitemap:/) == ["Sitemap: #{root_url}sitemap.xml"], "Robots must reference the site's absolute sitemap URL")
 entries = feed.xpath("/a:feed/a:entry", ns)
 authors_by_url = Dir[File.join(site_dir, "posts/*/index.html")].to_h do |path|
   html = Nokogiri::HTML(File.read(path))
@@ -62,4 +67,4 @@ home = Nokogiri::HTML(File.read(File.join(site_dir, "index.html")))
 links = home.css('head link[rel="alternate"][type="application/atom+xml"]')
 assert(links.size == 1 && links.first["href"] == root_url + "feed.xml", "Missing or duplicate Feed auto-discovery link")
 assert(feed.at_xpath('/a:feed/a:link[@rel="self"]', ns)["href"] == links.first["href"], "Feed self link differs from discovery URL")
-puts "Site metadata checks passed: #{authors_by_url.size} article authors, #{entries.size} Feed entries, URLs, and discovery"
+puts "Site metadata checks passed: #{authors_by_url.size} article authors, #{entries.size} Feed entries, URLs, discovery, and robots rules"
