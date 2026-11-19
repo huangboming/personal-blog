@@ -70,7 +70,7 @@ Production 和 Preview 环境变量：
 | 变量 | 值 |
 | --- | --- |
 | `JEKYLL_ENV` | `production` |
-| `RUBY_VERSION` | 与仓库 `.ruby-version` 一致，当前为 `3.4.1` |
+| `RUBY_VERSION` | 与仓库 `.ruby-version` 一致，当前为 `3.4.13` |
 | `BUNDLE_WITHOUT` | `development:test` |
 
 `BUNDLE_WITHOUT` 让依赖安装和构建都跳过测试依赖。使用 Pages 默认的自动依赖安装，**不设置 `SKIP_DEPENDENCY_INSTALL`**。
